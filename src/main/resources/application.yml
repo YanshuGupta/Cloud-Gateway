@@ -7,23 +7,41 @@ spring:
     name: Cloud-Gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
-      - id: person-controller
-        uri: http://localhost:8080
+      - id: practice
+        uri: lb://PRACTICE
         predicates:
-        - Path=/person, /person/{segment}, /persons
+        - Path=/person, /person/{segment}, /persons, /microservice1check
       - id: swagger
-        uri: http://localhost:8080
+        uri: lb://PRACTICE
         predicates:
         - Path= /swagger-ui.html**, /webjars/**, /swagger-resources/**, /v2/api-docs
+      - id: micro1
+        uri: lb://MICROSERVICE1
+        predicates:
+        - Path= /micro1
+      - id: micro2
+        uri: lb://MICROSERVICE2
+        predicates:
+        - Path= /micro2
 
 eureka:
+  instance:
+    hostname: localhost
   client:
     enabled: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
     healthcheck:
       enabled: true
-      
+
+management:
+  endpoint:
+    gateway:
+      enabled: true
+
 server:
-  port: 8081
+  port: 8000
